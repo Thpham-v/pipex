@@ -14,7 +14,7 @@ typedef struct	s_var
 {
 	int		fd_file;
 	int		fd[2];
-	char	str[3];
+	char	*str[3];
 	char	**path;
 	char	*cmd;
 	char	*cmd_path;
@@ -30,9 +30,10 @@ int		ft_strlen(char *str);
 char	*get_cmd(char *argv);
 char	*get_option(char *argv);
 char	*ft_strcpy(char *dest,char *src);
-char	*get_cmd_path(char *cmd, char **env, char **path);
-
-
-
+char	*get_cmd_path(char *cmd, char **path);
+char	*ft_strcat(char *s1, char *s2);
+void	ft_bzero(void *s, size_t n);
+void	first_f(char **env, t_var *var);
+void	last_f(char **env, t_var *var);
 
 #endif

@@ -1,59 +1,86 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thpham-v <thpham-v@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/17 17:05:58 by thpham-v          #+#    #+#             */
+/*   Updated: 2021/09/17 17:09:35 by thpham-v         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
-int    main(int ac, char **av, char **env)
+void	init_first_f(char **argv, char **env, t_var *var)
 {
-    int file;
-    char **path;
-    char *cmd;
-    char *cmdpath;
-    char *str[3];
-    int fd[2];
-    pid_t pid;
+	var->path = get_path(env);
+	var->fd_file = open(argv[1], O_RDONLY);
+	var->cmd = get_cmd(argv[2]);
+	var->cmd_path = get_cmd_path(var->cmd, var->path);
+	var->str[0] = var->cmd_path;
+	if (!var->str[0])
+		var->str[0] = var->cmd;
+	var->str[1] = get_option(argv[2]);
+	var->str[2] = NULL;
+}
 
-    if (ac < 5)
-        return (1);
-    path = get_path(env);
-    file = open(av[1], O_RDONLY);
-    cmd = get_cmd(av[2]);
-    cmdpath = get_cmdpath(cmd, env, path);
-    str[0] = cmdpath;
-    if (!str[0])
-        str[0] = cmd;
-    str[1] = get_option(av[2]);
-    str[2] = NULL;
-    pipe(fd);
-    pid = fork();
-    if (pid == 0)
+void	init_last_f(char **argv, t_var *var)
+{
+	var->fd_file = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    var->cmd = get_cmd(argv[3]);
+    var->cmd_path = get_cmd_path(var->cmd, var->path);
+    var->str[0] = var->cmd_path;
+    if (!var->str[0])
+        var->str[0] = var->cmd;
+    var->str[1] = get_option(argv[3]);
+}
+
+void	first_f(char **env, t_var *var)
+{
+	var->pid = fork();
+    if (var->pid == 0)
     {
-        dup2(file, STDIN_FILENO);
-        dup2(fd[1], STDOUT_FILENO);
-        close(fd[0]);
-        if (execve(str[0], str, env) == -1)
+        dup2(var->fd_file, STDIN_FILENO);
+        dup2(var->fd[1], STDOUT_FILENO);
+        close(var->fd[0]);
+        if (execve(var->str[0], var->str, env) == -1)
         {
             perror("pipex");
             exit(0);
         }
     }
-    close(file);
-    file = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    cmd = get_cmd(av[3]);
-    cmdpath = get_cmdpath(cmd, path);
-    str[0] = cmdpath;
-    if (!str[0])
-        str[0] = cmd;
-    str[1] = get_option(av[3]);
-    pid = fork();
-    if (pid == 0)
+}
+
+void	last_fork(char **env, t_var *var)
+{
+	var->pid = fork();
+    if (var->pid == 0)
     {
-        dup2(fd[0], STDIN_FILENO);
-        dup2(file, STDOUT_FILENO);
-        close(fd[1]);
-        if (execve(str[0], str, env) == -1)
+        dup2(var->fd[0], STDIN_FILENO);
+        dup2(var->fd_file, STDOUT_FILENO);
+        close(var->fd[1]);
+        if (execve(var->str[0], var->str, env) == -1)
         {
             perror("pipex");
             exit(0);
         }
     }
-    wait(&pid);
-    return (0);
+}
+
+int		main(int argc, char **argv, char **env)
+{
+	t_var var;
+
+	if (argc != 5)
+		return (1);
+    ft_bzero(&var, sizeof(t_var));
+	init_first_f(argv, env, &var);
+	pipe(var.fd);
+    first_f(env, &var);
+	close(var.fd_file);
+	init_last_f(argv, &var);
+    last_fork(env, &var);
+    wait(&var.pid);
+	return (0);
 }

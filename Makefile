@@ -1,7 +1,10 @@
 NAME			=	pipex
 SRC_DIR			=	./
 INC_DIR			=	./
-SRCS			=	
+SRCS			=	main.c	\
+					get_cmd.c	\
+					ft_split.c	\
+					utils.c		
 
 
 					

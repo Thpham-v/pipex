@@ -6,7 +6,7 @@
 /*   By: thpham-v <thpham-v@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/02 17:17:18 by thpham-v          #+#    #+#             */
-/*   Updated: 2021/09/07 02:31:10 by thpham-v         ###   ########.fr       */
+/*   Updated: 2021/09/16 19:52:37 by thpham-v         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ char	**get_path(char **env)
 	char	**tab_path;
 	
 	i = 0;
+	tab_path = NULL;
 	while (env[i])
 	{
 		if(!ft_strncmp(env[i], "PATH=", 5))
@@ -34,12 +35,12 @@ char	*get_cmd(char *argv)
 {
 	int		i;
 	char	*cmd;
-
+	
 	i = 0;
 	cmd = NULL;
 	while (argv[i] && argv[i] != ' ')
 		i++;
-	if (i < 0)
+	if (i > 0)
 		cmd = ft_strndup(argv, i);
 	return (cmd);
 }
@@ -62,11 +63,11 @@ char	*get_option(char *argv)
 		i++;
 	}
 	if (argv[i])
-		opt = ft_strndup(argv, i);
+		opt = ft_strndup(&argv[i], ft_strlen(&argv[i]));
 	return (opt);
 }
 
-char	*get_cmd_path(char *cmd, char **env, char **path)
+char	*get_cmd_path(char *cmd, char **path)
 {
 	char	*res;
 	int		i;
@@ -75,7 +76,7 @@ char	*get_cmd_path(char *cmd, char **env, char **path)
 	
 	i = -1;
 	cmd_len = ft_strlen(cmd);
-	while (path && path[i++])
+	while (path && path[++i])
 	{
 		path_len = ft_strlen(path[i]);
 		res = malloc(sizeof(char) * (path_len + cmd_len + 2));
@@ -84,7 +85,7 @@ char	*get_cmd_path(char *cmd, char **env, char **path)
 		ft_strcpy(res, path[i]);
 		res[path_len] = '/';
 		res[path_len + 1] = '\0';
-		ft_strcat(res[i], cmd);\
+		ft_strcat(res, cmd);
 		if (!access(res, F_OK))
 			return (res);
 		free(res);

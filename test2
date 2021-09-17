@@ -1,0 +1,4 @@
+ft_split.o
+get_cmd.o
+main.o
+utils.o
