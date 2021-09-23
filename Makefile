@@ -4,7 +4,9 @@ INC_DIR			=	./
 SRCS			=	main.c	\
 					get_cmd.c	\
 					ft_split.c	\
-					utils.c		
+					utils1.c	\
+					utils2.c	\
+					error.c
 
 
 					
