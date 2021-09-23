@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: thpham-v <thpham-v@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/17 17:05:58 by thpham-v          #+#    #+#             */
-/*   Updated: 2021/09/23 17:26:48 by thpham-v         ###   ########.fr       */
+/*   Created: 2021/09/23 18:32:42 by thpham-v          #+#    #+#             */
+/*   Updated: 2021/09/23 18:32:43 by thpham-v         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,14 @@ int	init_last_f(char **argv, t_var *var)
 	var->fd_file = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (var->fd_file == -1)
 		return (-2);
-    var->cmd = get_cmd(argv[3]);
+	var->cmd = get_cmd(argv[3]);
 	if (!var->cmd)
 		return (-2);
-    var->cmd_path = get_cmd_path(var->cmd, var->path);
-    var->str[0] = var->cmd_path;
-    if (!var->str[0])
-        var->str[0] = var->cmd;
-    var->str[1] = get_option(argv[3]);
+	var->cmd_path = get_cmd_path(var->cmd, var->path);
+	var->str[0] = var->cmd_path;
+	if (!var->str[0])
+		var->str[0] = var->cmd;
+	var->str[1] = get_option(argv[3]);
 	return (0);
 }
 
@@ -54,15 +54,15 @@ static void	first_fork(char **env, t_var *var)
 	if (var->ret >= 0)
 	{
 		var->pid1 = fork();
-    	if (var->pid1 == 0)
-    	{
-        	dup2(var->fd_file, STDIN_FILENO);
-        	dup2(var->fd[1], STDOUT_FILENO);
-        	close(var->fd[0]);
+		if (var->pid1 == 0)
+		{
+			dup2(var->fd_file, STDIN_FILENO);
+			dup2(var->fd[1], STDOUT_FILENO);
+			close(var->fd[0]);
 			close(var->fd[1]);
-        	if (execve(var->str[0], var->str, env) == -1)
+			if (execve(var->str[0], var->str, env) == -1)
 				execve_error(var);
-    	}
+		}
 	}
 	close(var->fd[1]);
 	free(var->cmd);
@@ -71,7 +71,6 @@ static void	first_fork(char **env, t_var *var)
 	var->cmd_path = NULL;
 	free(var->str[1]);
 	var->str[1] = NULL;
-	
 }
 
 static void	last_fork(char **env, t_var *var)
@@ -97,33 +96,22 @@ static void	last_fork(char **env, t_var *var)
 	var->str[1] = NULL;
 }
 
-int		main(int argc, char **argv, char **env)
+int	main(int argc, char **argv, char **env)
 {
-	t_var var;
+	t_var	var;
 
 	if (argc != 5)
 		return (1);
-    ft_bzero(&var, sizeof(t_var));
+	ft_bzero(&var, sizeof(t_var));
 	var.ret = init_first_f(argv, env, &var);
 	if (var.ret < 0)
-		perror("pipex1");
-    first_fork(env, &var);
+		perror("pipex");
+	first_fork(env, &var);
 	var.ret = init_last_f(argv, &var);
 	if (var.ret < 0)
-		perror("pipex2");
-    last_fork(env, &var);
-	if (var.pid1 != 0)
-	{
-    	waitpid(var.pid1, &var.status, 0);
-		if (WIFEXITED(var.status))
-			var.exit = WEXITSTATUS(var.status);
-	}
-	if (var.pid2 != 0)
-	{
-		waitpid(var.pid2, &var.status, 0);
-		if (WIFEXITED(var.status))
-			var.exit = WEXITSTATUS(var.status);
-	}
+		perror("pipex");
+	last_fork(env, &var);
+	wait_pids(&var);
 	exit_prg(&var);
 	return (0);
 }

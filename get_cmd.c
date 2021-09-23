@@ -6,7 +6,7 @@
 /*   By: thpham-v <thpham-v@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/02 17:17:18 by thpham-v          #+#    #+#             */
-/*   Updated: 2021/09/16 19:52:37 by thpham-v         ###   ########.fr       */
+/*   Updated: 2021/09/23 18:12:27 by thpham-v         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@ char	**get_path(char **env)
 {
 	int		i;
 	char	**tab_path;
-	
+
 	i = 0;
 	tab_path = NULL;
 	while (env[i])
 	{
-		if(!ft_strncmp(env[i], "PATH=", 5))
+		if (!ft_strncmp(env[i], "PATH=", 5))
 		{
 			tab_path = ft_split(env[i] + 5, ':');
 			break ;
@@ -35,7 +35,7 @@ char	*get_cmd(char *argv)
 {
 	int		i;
 	char	*cmd;
-	
+
 	i = 0;
 	cmd = NULL;
 	while (argv[i] && argv[i] != ' ')
@@ -73,7 +73,7 @@ char	*get_cmd_path(char *cmd, char **path)
 	int		i;
 	int		cmd_len;
 	int		path_len;
-	
+
 	i = -1;
 	cmd_len = ft_strlen(cmd);
 	while (path && path[++i])

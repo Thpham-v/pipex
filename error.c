@@ -6,7 +6,7 @@
 /*   By: thpham-v <thpham-v@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 16:50:27 by thpham-v          #+#    #+#             */
-/*   Updated: 2021/09/23 17:29:13 by thpham-v         ###   ########.fr       */
+/*   Updated: 2021/09/23 18:11:15 by thpham-v         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ void	free_variables(t_var *var)
 {
 	if (var->path)
 		ft_free_tab(var->path);
-	/*if (var->cmd)
+	if (var->cmd)
 		free(var->cmd);
 	if (var->cmd_path)
-		free(var->cmd_path);*/
+		free(var->cmd_path);
 }
 
 void	exit_prg(t_var *var)
