@@ -1,6 +1,6 @@
 NAME			=	pipex
-SRC_DIR			=	./
-INC_DIR			=	./
+SRC_DIR			=	./srcs/
+INC_DIR			=	./header/
 SRCS			=	main.c	\
 					get_cmd.c	\
 					ft_split.c	\

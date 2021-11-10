@@ -6,7 +6,7 @@
 /*   By: thpham-v <thpham-v@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/23 18:32:42 by thpham-v          #+#    #+#             */
-/*   Updated: 2021/09/23 18:32:43 by thpham-v         ###   ########.fr       */
+/*   Updated: 2021/11/09 16:59:05 by thpham-v         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,8 @@ int	main(int argc, char **argv, char **env)
 	t_var	var;
 
 	if (argc != 5)
+		return (1);
+	if (*__environ == NULL)
 		return (1);
 	ft_bzero(&var, sizeof(t_var));
 	var.ret = init_first_f(argv, env, &var);
