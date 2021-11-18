@@ -6,7 +6,7 @@
 /*   By: thpham-v <thpham-v@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/23 18:32:42 by thpham-v          #+#    #+#             */
-/*   Updated: 2021/11/09 16:59:05 by thpham-v         ###   ########.fr       */
+/*   Updated: 2021/11/18 15:35:00 by thpham-v         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,13 @@ static void	first_fork(char **env, t_var *var)
 			close(var->fd[0]);
 			close(var->fd[1]);
 			if (execve(var->str[0], var->str, env) == -1)
+			{
+				free(var->str[1]);
+				var->str[1] = NULL;
 				execve_error(var);
+			}
+			//if (execve(var->str[1], var->str, env) == -1)
+				//execve_error(var);
 		}
 	}
 	close(var->fd[1]);
@@ -84,7 +90,13 @@ static void	last_fork(char **env, t_var *var)
 			dup2(var->fd_file, STDOUT_FILENO);
 			close(var->fd[1]);
 			if (execve(var->str[0], var->str, env) == -1)
+			{	
+				free(var->str[1]);
+				var->str[1] = NULL;
 				execve_error(var);
+			}
+			//if (execve(var->str[1], var->str, env) == -1)
+				//execve_error(var);
 		}
 	}
 	close(var->fd[0]);
